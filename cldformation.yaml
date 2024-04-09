@@ -527,9 +527,9 @@ Resources:
           rm .env
           sudo apt-get install -y awscli
           sudo apt-get install jq -y
-          aws configure set aws_access_key_id ASIA6GBMDF6TBIJU46GU
-          aws configure set aws_secret_access_key is2Il2VAil1Z3YuPImPfGZWLs6DR8k0kiuFO94v1
-          aws configure set aws_session_token IQoJb3JpZ2luX2VjEMb//////////wEaCXVzLXdlc3QtMiJIMEYCIQDOKNVLlac5qEh59awWNeNmPOv+zFVBRiPc+j82HQH3DgIhAIgLvQ5+TrxilRiI0HpVzUEXB+z05jzZj1sHYZu/BCp4KrICCO///////////wEQABoMOTc1MDUwMDU5Njg2IgwZUe11WtyPhQXVlu8qhgISXyWKCB9o/7W9Lf/nPzw5uLWcdvkIwM5VrzAot+IQXXPdbUCixBlTReoTsB7puQ1vcVM3nCaApWx8pjUSYJCbDHhUsgyuNlRCWCrvq6GVUDZxmVOWmeMQ2pSlDL16L6x/yfdmTCucvnjfZtA9wb61yl2xd9x/5wLMp9LtJH7KRpag7aWf3RmzR2WrEjT31KYKQXQfr8r4MvCqKKvUnSK7FZdp3S4/+01qt3TWza13Z4mCpYK0dtFs9AufQBkUOrfmYz3hIZjEIGGARM2jgHJRieCRKUHpIWQfBNplugSBxNPwj0KJz0kPweZpKM7p4mZSovT/3H+rSZnEli2mPPihxREtrpHtMNT4z7AGOpwBL2dZVZWQLCiUFmkhGLT9LS0kkaijkN8deeDT8oNnkPFmpgS6w9zO6v19qXFWeCto6hWJvRTlA7HNOcEwTFLgU6sY98DBNKjLDbq56BT/MpdSdz1HrZi7x41mNx28zD3k7V9oedlO4qj6UczT4UPGAwwllVxtvYDF6aMFtp1jo67eFgRjrYr4tIYTUpx+UUCtQ3lnyz1fTf/WgD+C
+          aws configure set aws_access_key_id 
+          aws configure set aws_secret_access_key 
+          aws configure set aws_session_token
           aws configure set region us-east-1
           gatewayid=$(aws apigateway get-rest-apis | jq -r '.items[] | select(.name=="EcommerceApi") | .id')
           REACT_APP_AWS_API_URL="REACT_APP_API_ENDPOINT=https://${gatewayid}.execute-api.us-east-1.amazonaws.com/prod"

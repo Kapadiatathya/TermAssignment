@@ -1,0 +1,35 @@
+aws dynamodb put-item \
+    --table-name Items \
+    --item '{"Title": {"S": "One Plus 12"}, "Price": {"S": "$780"}, "img": {"S": "https://itemsimagessellphy.s3.amazonaws.com/ph1.png"}, "id": {"S": "1"}}'
+
+aws dynamodb put-item \
+    --table-name Items \
+    --item '{"Title": {"S": "One Plus Nord"}, "Price": {"S": "$600"}, "img": {"S": "https://itemsimagessellphy.s3.amazonaws.com/ph2.png"}, "id": {"S": "2"}}'
+
+aws dynamodb put-item \
+    --table-name Items \
+    --item '{"Title": {"S": "Samsung S24+"}, "Price": {"S": "$975"}, "img": {"S": "https://itemsimagessellphy.s3.amazonaws.com/ph3.png"}, "id": {"S": "3"}}'
+
+aws dynamodb put-item \
+    --table-name Items \
+    --item '{"Title": {"S": "Samsung S24 Ultra"}, "Price": {"S": "$1140"}, "img": {"S": "https://itemsimagessellphy.s3.amazonaws.com/ph4.png"}, "id": {"S": "4"}}'
+
+aws dynamodb put-item \
+    --table-name Items \
+    --item '{"Title": {"S": "Samsung S24"}, "Price": {"S": "$900"}, "img": {"S": "https://itemsimagessellphy.s3.amazonaws.com/ph5.png"}, "id": {"S": "5"}}'
+
+aws dynamodb put-item \
+    --table-name Items \
+    --item '{"Title": {"S": "Samsung Fold5"}, "Price": {"S": "$1350"}, "img": {"S": "https://itemsimagessellphy.s3.amazonaws.com/ph6.png"}, "id": {"S": "6"}}'
+
+aws dynamodb put-item \
+    --table-name Items \
+    --item '{"Title": {"S": "Samsung Flip5"}, "Price": {"S": "$1700"}, "img": {"S": "https://itemsimagessellphy.s3.amazonaws.com/ph7.png"}, "id": {"S": "7"}}'
+
+aws dynamodb put-item \
+    --table-name Items \
+    --item '{"Title": {"S": "Samsung S23 FE"}, "Price": {"S": "$800"}, "img": {"S": "https://itemsimagessellphy.s3.amazonaws.com/ph8.png"}, "id": {"S": "8"}}'
+
+
+
+        

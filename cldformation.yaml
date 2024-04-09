@@ -253,7 +253,7 @@ Resources:
       PathPart: "emailregister"
       RestApiId: !Ref ItemsApi
 
-  # / emailregister endpoint
+  # / email endpoint
   EmailResource:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -467,53 +467,11 @@ Resources:
     Type: AWS::ApiGateway::Deployment
     DependsOn:
       - ItemsGetMethod
-    Properties:
-      RestApiId: !Ref ItemsApi
-      StageName: prod
-
-  ContactUSApiDeployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn:
       - ContactPostMethod
-    Properties:
-      RestApiId: !Ref ItemsApi
-      StageName: prod
-
-  OrderApiDeployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn:
       - OrderPostMethod
-    Properties:
-      RestApiId: !Ref ItemsApi
-      StageName: prod
-
-  AuthApiDeployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn:
       - AuthPostMethod
-    Properties:
-      RestApiId: !Ref ItemsApi
-      StageName: prod
-
-  RegisterApiDeployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn:
       - RegisterPostMethod
-    Properties:
-      RestApiId: !Ref ItemsApi
-      StageName: prod
-
-  EmailRegisterApiDeployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn:
       - EmailRegisterPostMethod
-    Properties:
-      RestApiId: !Ref ItemsApi
-      StageName: prod
-
-  EmailApiDeployment:
-    Type: AWS::ApiGateway::Deployment
-    DependsOn:
       - EmailPostMethod
     Properties:
       RestApiId: !Ref ItemsApi
@@ -547,74 +505,61 @@ Resources:
             method.response.header.Access-Control-Allow-Headers: true
             method.response.header.Access-Control-Allow-Methods: true
             method.response.header.Access-Control-Allow-Origin: true
+
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    DependsOn:
+      - ItemsApi
+    Properties:
+      ImageId: ami-080e1f13689e07408
+      InstanceType: t3.medium
+      SecurityGroups:
+        - !Ref EC2SecurityGroup
+      KeyName: vockey
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          cd /home/ubuntu
+          sudo apt-get update -y
+          sudo apt install -y git
+          git clone https://github.com/Kapadiatathya/TermAssignment.git
+          cd TermAssignment/
+          rm .env
+          sudo apt-get install -y awscli
+          sudo apt-get install jq -y
+          aws configure set aws_access_key_id ASIA6GBMDF6TBIJU46GU
+          aws configure set aws_secret_access_key is2Il2VAil1Z3YuPImPfGZWLs6DR8k0kiuFO94v1
+          aws configure set aws_session_token IQoJb3JpZ2luX2VjEMb//////////wEaCXVzLXdlc3QtMiJIMEYCIQDOKNVLlac5qEh59awWNeNmPOv+zFVBRiPc+j82HQH3DgIhAIgLvQ5+TrxilRiI0HpVzUEXB+z05jzZj1sHYZu/BCp4KrICCO///////////wEQABoMOTc1MDUwMDU5Njg2IgwZUe11WtyPhQXVlu8qhgISXyWKCB9o/7W9Lf/nPzw5uLWcdvkIwM5VrzAot+IQXXPdbUCixBlTReoTsB7puQ1vcVM3nCaApWx8pjUSYJCbDHhUsgyuNlRCWCrvq6GVUDZxmVOWmeMQ2pSlDL16L6x/yfdmTCucvnjfZtA9wb61yl2xd9x/5wLMp9LtJH7KRpag7aWf3RmzR2WrEjT31KYKQXQfr8r4MvCqKKvUnSK7FZdp3S4/+01qt3TWza13Z4mCpYK0dtFs9AufQBkUOrfmYz3hIZjEIGGARM2jgHJRieCRKUHpIWQfBNplugSBxNPwj0KJz0kPweZpKM7p4mZSovT/3H+rSZnEli2mPPihxREtrpHtMNT4z7AGOpwBL2dZVZWQLCiUFmkhGLT9LS0kkaijkN8deeDT8oNnkPFmpgS6w9zO6v19qXFWeCto6hWJvRTlA7HNOcEwTFLgU6sY98DBNKjLDbq56BT/MpdSdz1HrZi7x41mNx28zD3k7V9oedlO4qj6UczT4UPGAwwllVxtvYDF6aMFtp1jo67eFgRjrYr4tIYTUpx+UUCtQ3lnyz1fTf/WgD+C
+          aws configure set region us-east-1
+          gatewayid=$(aws apigateway get-rest-apis | jq -r '.items[] | select(.name=="EcommerceApi") | .id')
+          REACT_APP_AWS_API_URL="REACT_APP_API_ENDPOINT=https://${gatewayid}.execute-api.us-east-1.amazonaws.com/prod"
+          echo $REACT_APP_AWS_API_URL >> .env 
+          sudo apt install npm -y
+          npm install
+          npm run build
+          nohup npm start > /dev/null 2>&1 &
+
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH and HTTP access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0  # Allow SSH access from anywhere
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0  # Allow HTTP access from anywhere
+
+
+
+Outputs:
+  ItemsApiPublicEndpoint:
+    Description: "Endpoint for items API"
+    Value: !Sub "https://${ItemsApi}.execute-api.us-east-1.amazonaws.com/prod"
+  Ec2InstancePublicIP:
+    Description: "Public IP of the EC2 Instance"
+    Value: !GetAtt MyEC2Instance.PublicIp
             
-     
-  # # /contact endpoint
-  # ContactResource:
-  #   Type: AWS::ApiGateway::Resource
-  #   Properties:
-  #     ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
-  #     RestApiId: !Ref ApiGatewayRestApi
-  #     PathPart: 'contact'
-
-  # ContactMethod:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties:
-  #     AuthorizationType: NONE
-  #     HttpMethod: POST
-  #     ResourceId: !Ref ContactResource
-  #     RestApiId: !Ref ApiGatewayRestApi
-  #     Integration:
-  #       IntegrationHttpMethod: POST
-  #       Type: AWS_PROXY
-  #       Uri: !Sub
-  #         - arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${PostToContactUsFunction_Arn}/invocations
-  #         - { PostToContactUsFunction_Arn: !Ref PostToContactUsFunction }
-  #     MethodResponses:
-  #       - StatusCode: '200'
-  #         ResponseModels:
-  #           application/json: "Empty"
-  #         ResponseParameters:
-  #           method.response.header.Access-Control-Allow-Origin: true
-  #     IntegrationResponses:
-  #       - StatusCode: 200
-  #         ResponseParameters:
-  #           method.response.header.Access-Control-Allow-Origin: "'*'"
-  #       - StatusCode: 200
-  #         ResponseParameters:
-  #           method.response.header.Access-Control-Allow-Origin: "'*'"
-
-  # # /order endpoint
-  # OrderResource:
-  #   Type: AWS::ApiGateway::Resource
-  #   Properties:
-  #     ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
-  #     RestApiId: !Ref ApiGatewayRestApi
-  #     PathPart: 'order'
-
-  # OrderMethod:
-  #   Type: AWS::ApiGateway::Method
-  #   Properties:
-  #     AuthorizationType: NONE
-  #     HttpMethod: POST
-  #     ResourceId: !Ref OrderResource
-  #     RestApiId: !Ref ApiGatewayRestApi
-  #     Integration:
-  #       IntegrationHttpMethod: POST
-  #       Type: AWS_PROXY
-  #       Uri: !Sub
-  #         - arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${PostToOrdersFunction_Arn}/invocations
-  #         - { PostToOrdersFunction_Arn: !Ref PostToOrdersFunction }
-  #     MethodResponses:
-  #       - StatusCode: '200'
-  #         ResponseModels:
-  #           application/json: "Empty"
-  #         ResponseParameters:
-  #           method.response.header.Access-Control-Allow-Origin: true
-  #     IntegrationResponses:
-  #       - StatusCode: 200
-  #         ResponseParameters:
-  #           method.response.header.Access-Control-Allow-Origin: "'*'"
-  #       - StatusCode: 200
-  #         ResponseParameters:
-  #           method.response.header.Access-Control-Allow-Origin: "'*'"
